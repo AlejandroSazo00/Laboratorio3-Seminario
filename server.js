@@ -199,6 +199,7 @@ app.post('/api/auth/register', authenticateToken, requireAdmin, async (req, res)
       id: users.length + 1,
       username,
       password: hashedPassword,
+      originalPassword: password, // Guardar contraseña original para mostrar en credenciales
       role,
       email
     };
@@ -344,22 +345,13 @@ app.put('/api/auth/change-password', authenticateToken, async (req, res) => {
     }
     
     user.password = newPassword;
+    user.originalPassword = newPassword; // Actualizar contraseña original para credenciales
     saveAllData(); // Guardar cambios
     
     res.json({ message: 'Contraseña actualizada exitosamente' });
   } catch (error) {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
-});
-
-// Obtener credenciales actuales (para mostrar dinámicamente)
-app.get('/api/credentials', (req, res) => {
-  const credentials = users.map(user => ({
-    username: user.username,
-    password: user.password,
-    role: user.role
-  }));
-  res.json(credentials);
 });
 
 // Crear partidos
@@ -448,6 +440,54 @@ app.put('/api/teams/:id/image', authenticateToken, requireCoachOrAdmin, (req, re
     
     saveAllData(); // Guardar cambios
     res.json({ message: 'Imagen actualizada exitosamente', team });
+  } catch (error) {
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// Obtener credenciales actuales (para mostrar dinámicamente)
+app.get('/api/credentials', (req, res) => {
+  const credentials = users.map(user => ({
+    username: user.username,
+    password: user.originalPassword || user.password, // Mostrar contraseña original si existe
+    role: user.role
+  }));
+  
+  res.json(credentials);
+});
+
+// Eliminar usuario (solo admin)
+app.delete('/api/users/:id', authenticateToken, requireAdmin, (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'ID de usuario requerido' });
+    }
+    
+    // No permitir que el admin se elimine a sí mismo
+    if (userId === req.user.id) {
+      return res.status(400).json({ error: 'No puedes eliminarte a ti mismo' });
+    }
+    
+    const userIndex = users.findIndex(u => u.id === userId);
+    
+    if (userIndex === -1) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    
+    const deletedUser = users[userIndex];
+    users.splice(userIndex, 1);
+    saveAllData(); // Guardar cambios
+    
+    res.json({ 
+      message: `Usuario ${deletedUser.username} eliminado exitosamente`,
+      deletedUser: {
+        id: deletedUser.id,
+        username: deletedUser.username,
+        role: deletedUser.role
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: 'Error interno del servidor' });
   }

@@ -236,9 +236,10 @@
             
             <div class="credentials-info" id="credentialsInfo">
                 <h4>🔑 Credenciales Actuales:</h4>
-                <div id="credentialsList">
-                    <p>Cargando credenciales...</p>
+                <div id="usersData">
+                    <p>Cargando usuarios...</p>
                 </div>
+                <div id="usersList" style="margin-top: 20px;"></div>
                 <button class="btn" onclick="loadCredentials()">🔄 Actualizar Credenciales</button>
             </div>
             
@@ -512,6 +513,8 @@
                     document.getElementById('newEmail').value = '';
                     document.getElementById('newUserPassword').value = '';
                     loadUsers();
+                    loadUsersWithDelete(); // Actualizar lista con botones de eliminar
+                    loadCredentials(); // Actualizar credenciales
                 } else {
                     showAlert('adminAlert', data.error, 'error');
                 }
@@ -731,6 +734,7 @@
             loadGames();
             loadTeamOptions();
             loadGameTeamOptions();
+            loadUsersWithDelete(); // Cargar usuarios con botones de eliminar
         }
 
         // Cargar credenciales dinámicamente
@@ -744,6 +748,65 @@
                 `).join('');
             } catch (error) {
                 document.getElementById('credentialsList').innerHTML = '<p>Error al cargar credenciales</p>';
+            }
+        }
+
+        // Cargar usuarios con opción de eliminar (solo admin)
+        async function loadUsersWithDelete() {
+            if (!currentUser || currentUser.role !== 'admin') return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/users`, {
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                const users = await response.json();
+                
+                if (response.ok) {
+                    let usersHtml = '<h4>👥 Gestión de Usuarios:</h4>';
+                    users.forEach(user => {
+                        const canDelete = user.id !== currentUser.id; // No puede eliminarse a sí mismo
+                        usersHtml += `
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin: 8px 0; padding: 10px; background: #f9f9f9; border-radius: 4px;">
+                                <div>
+                                    <strong>${user.username}</strong> - ${user.role} (${user.email})
+                                </div>
+                                ${canDelete ? `<button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 12px;" onclick="deleteUser(${user.id}, '${user.username}')">🗑️ Eliminar</button>` : '<span style="color: #666; font-size: 12px;">Admin actual</span>'}
+                            </div>
+                        `;
+                    });
+                    
+                    document.getElementById('usersList').innerHTML = usersHtml;
+                } else {
+                    document.getElementById('usersList').innerHTML = '<p style="color: red;">Error cargando usuarios</p>';
+                }
+            } catch (error) {
+                document.getElementById('usersList').innerHTML = '<p style="color: red;">Error de conexión</p>';
+            }
+        }
+
+        // Eliminar usuario
+        async function deleteUser(userId, username) {
+            if (!confirm(`¿Estás seguro de que quieres eliminar al usuario "${username}"?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert('loginAlert', data.message, 'success');
+                    loadUsersWithDelete(); // Recargar lista
+                    loadCredentials(); // Actualizar credenciales
+                } else {
+                    showAlert('loginAlert', data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('loginAlert', 'Error de conexión', 'error');
             }
         }
 
