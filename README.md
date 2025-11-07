@@ -459,21 +459,39 @@ https://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.c
 2. Presionar **Ctrl+R** (refrescar página)
 3. ✅ **Resultado:** Mantiene la sesión activa
 
-#### **Prueba 2: Cambio de Contraseñas Dinámico**
-1. Ir a "🔐 Cambiar Contraseña"
-2. Cambiar de `hello` a `nueva123`
-3. ✅ **Resultado:** Las credenciales se actualizan automáticamente
+#### **Prueba 2: Gestión de Usuarios Completa**
+1. Login como **admin**
+2. Crear nuevo usuario: `TestUser` / `test123` / `coach`
+3. Verificar que aparece en credenciales como `TestUser / test123` (sin hash)
+4. Hacer clic "👥 Ver Usuarios" → Ver botón rojo "🗑️ Eliminar"
+5. Cerrar sesión y login con `TestUser` / `test123`
+6. ✅ **Resultado:** Login funciona, no ve botones eliminar (solo admin)
 
-#### **Prueba 3: Creación de Datos**
+#### **Prueba 3: Credenciales Dinámicas**
+1. Login como admin y cambiar contraseña de `hello` a `nueva123`
+2. Verificar que credenciales muestran `admin / nueva123` (contraseña real)
+3. Crear usuario `Coach1` / `password456`
+4. ✅ **Resultado:** Credenciales siempre muestran contraseña real, nunca hash SSH
+
+#### **Prueba 4: Eliminar Usuarios (Solo Admin)**
+1. Login como **admin**
+2. Ir a "👥 Ver Usuarios"
+3. Ver botones rojos "🗑️ Eliminar" junto a usuarios (excepto admin actual)
+4. Eliminar un usuario → Confirmar eliminación
+5. Login como **coach** → No ver botones eliminar
+6. ✅ **Resultado:** Solo admin puede eliminar usuarios
+
+#### **Prueba 5: Creación de Datos Deportivos**
 1. Crear nuevo equipo "Rockets"
 2. Agregar jugador "James Harden" al equipo
 3. Crear partido Lakers vs Rockets
 4. ✅ **Resultado:** Estadísticas se recalculan automáticamente
 
-#### **Prueba 4: Persistencia de Datos**
-1. Crear datos nuevos
+#### **Prueba 6: Persistencia de Datos**
+1. Crear datos nuevos (usuarios, equipos, jugadores)
 2. Refrescar página múltiples veces
-3. ✅ **Resultado:** Los datos persisten
+3. Reiniciar servidor (simulado)
+4. ✅ **Resultado:** Todos los datos persisten
 
 ## 📊 **Estado del Despliegue**
 
@@ -505,9 +523,33 @@ Internet → OpenShift Route → Service → Pod → Node.js App
 
 **Basketball Scoreboard** es una aplicación web **completamente funcional y dinámica** que demuestra:
 
-✅ **Autenticación JWT real** con roles diferenciados  
-✅ **Persistencia de datos** entre reinicios  
-✅ **Operaciones CRUD** completas y funcionales  
+### 🔐 **Sistema de Autenticación Avanzado**
+✅ **JWT con roles diferenciados** (Admin, Coach, User)  
+✅ **Login híbrido** - Maneja usuarios por defecto y nuevos con bcrypt  
+✅ **Persistencia de sesión** - No se pierde al refrescar (Ctrl+R)  
+✅ **Cambio de contraseñas dinámico** con actualización inmediata  
+
+### 👥 **Gestión de Usuarios Completa**
+✅ **Creación de usuarios** con todos los roles  
+✅ **Credenciales dinámicas** - Muestra contraseña real (no hash SSH)  
+✅ **Eliminar usuarios** - Solo administradores, con confirmación  
+✅ **Protección admin** - No puede eliminarse a sí mismo  
+
+### 💾 **Persistencia Total**
+✅ **Datos persistentes** - Equipos, jugadores, partidos, usuarios  
+✅ **Sesión persistente** - Mantiene login entre recargas  
+✅ **Archivo JSON** - Todos los cambios se guardan automáticamente  
+
+### 🏀 **Funcionalidades Deportivas**
+✅ **Gestión de equipos** - Crear, editar, subir imágenes  
+✅ **Gestión de jugadores** - Asignar a equipos, posiciones  
+✅ **Gestión de partidos** - Crear, actualizar resultados  
+✅ **Estadísticas dinámicas** - Se recalculan automáticamente  
+
+### 🔒 **Seguridad y Roles**
+✅ **Control de acceso** - Funciones según rol de usuario  
+✅ **Middleware de autenticación** - Protege rutas sensibles  
+✅ **Validación de permisos** - Admin, Coach, User diferenciados  
 ✅ **Cálculos dinámicos** en tiempo real  
 ✅ **Interfaz responsive** moderna  
 ✅ **API REST** robusta y documentada  
