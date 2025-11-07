@@ -756,7 +756,10 @@
 
         // Cargar usuarios con opción de eliminar (solo admin)
         async function loadUsersWithDelete() {
-            if (!currentUser || currentUser.role !== 'admin') return;
+            if (!currentUser || currentUser.role !== 'admin') {
+                document.getElementById('usersList').innerHTML = '<p style="color: #666;">Solo administradores pueden gestionar usuarios</p>';
+                return;
+            }
             
             try {
                 const response = await fetch(`${API_BASE}/users`, {
@@ -780,10 +783,12 @@
                     
                     document.getElementById('usersList').innerHTML = usersHtml;
                 } else {
-                    document.getElementById('usersList').innerHTML = '<p style="color: red;">Error cargando usuarios</p>';
+                    console.error('Error response:', response.status, users);
+                    document.getElementById('usersList').innerHTML = '<p style="color: red;">Error cargando usuarios: ' + (users.error || 'Error desconocido') + '</p>';
                 }
             } catch (error) {
-                document.getElementById('usersList').innerHTML = '<p style="color: red;">Error de conexión</p>';
+                console.error('Network error:', error);
+                document.getElementById('usersList').innerHTML = '<p style="color: red;">Error de conexión: ' + error.message + '</p>';
             }
         }
 
