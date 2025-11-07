@@ -431,6 +431,9 @@
                     currentToken = data.token;
                     currentUser = data.user;
                     
+                    // Guardar sesión en localStorage
+                    saveSession(data.token, data.user);
+                    
                     document.getElementById('loginSection').classList.add('hidden');
                     document.getElementById('dashboardSection').classList.remove('hidden');
                     document.getElementById('userInfo').innerHTML = `
@@ -461,6 +464,9 @@
         }
         
         function logout() {
+            // Limpiar sesión del localStorage
+            clearSession();
+            
             currentToken = null;
             currentUser = null;
             document.getElementById('loginSection').classList.remove('hidden');
@@ -468,6 +474,7 @@
             document.getElementById('adminSection').classList.add('hidden');
             document.getElementById('coachSection').classList.add('hidden');
             document.getElementById('playerSection').classList.add('hidden');
+            document.getElementById('gameSection').classList.add('hidden');
             
             // Clear form fields
             document.getElementById('username').value = '';
@@ -767,6 +774,11 @@
                     document.getElementById('currentPassword').value = '';
                     document.getElementById('newPassword').value = '';
                     loadCredentials(); // Actualizar credenciales mostradas
+                    
+                    // Actualizar sesión con nueva información si es necesario
+                    if (currentUser) {
+                        saveSession(currentToken, currentUser);
+                    }
                 } else {
                     showAlert('passwordAlert', data.error, 'error');
                 }
@@ -860,6 +872,87 @@
             document.getElementById(elementId).innerHTML = '';
         }
         
+        // Funciones de persistencia de sesión
+        function saveSession(token, user) {
+            localStorage.setItem('basketball_token', token);
+            localStorage.setItem('basketball_user', JSON.stringify(user));
+        }
+        
+        function loadSession() {
+            const token = localStorage.getItem('basketball_token');
+            const userStr = localStorage.getItem('basketball_user');
+            
+            if (token && userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    return { token, user };
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                    clearSession();
+                    return null;
+                }
+            }
+            return null;
+        }
+        
+        function clearSession() {
+            localStorage.removeItem('basketball_token');
+            localStorage.removeItem('basketball_user');
+        }
+        
+        function restoreSession() {
+            const session = loadSession();
+            if (session) {
+                currentToken = session.token;
+                currentUser = session.user;
+                
+                // Verificar si el token sigue siendo válido
+                verifyToken().then(isValid => {
+                    if (isValid) {
+                        // Restaurar interfaz
+                        document.getElementById('loginSection').classList.add('hidden');
+                        document.getElementById('dashboardSection').classList.remove('hidden');
+                        document.getElementById('userInfo').innerHTML = `
+                            <strong>${session.user.username}</strong> (${session.user.role})<br>
+                            <small>${session.user.email}</small>
+                        `;
+                        
+                        // Mostrar secciones según rol
+                        if (session.user.role === 'admin') {
+                            document.getElementById('adminSection').classList.remove('hidden');
+                            document.getElementById('coachSection').classList.remove('hidden');
+                            document.getElementById('playerSection').classList.remove('hidden');
+                            document.getElementById('gameSection').classList.remove('hidden');
+                        } else if (session.user.role === 'coach') {
+                            document.getElementById('coachSection').classList.remove('hidden');
+                            document.getElementById('playerSection').classList.remove('hidden');
+                            document.getElementById('gameSection').classList.remove('hidden');
+                        }
+                        
+                        loadAllData();
+                    } else {
+                        // Token inválido, limpiar sesión
+                        clearSession();
+                        currentToken = null;
+                        currentUser = null;
+                    }
+                });
+            }
+        }
+        
+        async function verifyToken() {
+            if (!currentToken) return false;
+            
+            try {
+                const response = await fetch(`${API_BASE}/health`, {
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+        
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Add enter key support for login
@@ -871,6 +964,9 @@
             
             // Load credentials on page load
             loadCredentials();
+            
+            // Restaurar sesión si existe
+            restoreSession();
         });
     </script>
 </body>

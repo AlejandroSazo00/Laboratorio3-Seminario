@@ -294,11 +294,58 @@
             }
         }
         
-        // Initialize the application
+        // Funciones de persistencia de sesión
+        function checkSession() {
+            const token = localStorage.getItem('basketball_token');
+            const userStr = localStorage.getItem('basketball_user');
+            
+            if (token && userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    // Si hay sesión activa, mostrar información del usuario
+                    const userInfo = document.createElement('div');
+                    userInfo.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: rgba(255, 255, 255, 0.9);
+                        padding: 15px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                        z-index: 1000;
+                        color: #333;
+                        font-weight: bold;
+                    `;
+                    userInfo.innerHTML = `
+                        <div>👋 Hola, ${user.username}!</div>
+                        <div style="font-size: 0.9em; opacity: 0.8;">${user.role}</div>
+                        <button onclick="goToAdmin()" style="
+                            background: linear-gradient(45deg, #ffd700, #ffed4e);
+                            border: none;
+                            padding: 8px 15px;
+                            border-radius: 5px;
+                            margin-top: 8px;
+                            cursor: pointer;
+                            font-weight: bold;
+                        ">📊 Ir al Panel</button>
+                    `;
+                    document.body.appendChild(userInfo);
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                }
+            }
+        }
+        
+        function goToAdmin() {
+            window.location.href = '/admin.html';
+        }
+
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
             loadTeams();
             loadPlayers();
             loadGames();
+            checkSession(); // Verificar si hay sesión activa
         });
     </script>
 </body>
