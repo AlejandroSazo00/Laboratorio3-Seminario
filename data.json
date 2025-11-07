@@ -1,0 +1,186 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "hello",
+      "role": "admin",
+      "email": "admin@basketball.com"
+    },
+    {
+      "id": 2,
+      "username": "coach",
+      "password": "hello",
+      "role": "coach",
+      "email": "coach@basketball.com"
+    },
+    {
+      "id": 3,
+      "username": "user",
+      "password": "hello",
+      "role": "user",
+      "email": "user@basketball.com"
+    }
+  ],
+  "teams": [
+    {
+      "id": 1,
+      "name": "Lakers",
+      "city": "Los Angeles",
+      "players": 12,
+      "wins": 45,
+      "losses": 20,
+      "coach": "Frank Vogel",
+      "founded": 1947
+    },
+    {
+      "id": 2,
+      "name": "Warriors",
+      "city": "Golden State",
+      "players": 15,
+      "wins": 50,
+      "losses": 15,
+      "coach": "Steve Kerr",
+      "founded": 1946
+    },
+    {
+      "id": 3,
+      "name": "Bulls",
+      "city": "Chicago",
+      "players": 13,
+      "wins": 35,
+      "losses": 30,
+      "coach": "Billy Donovan",
+      "founded": 1966
+    },
+    {
+      "id": 4,
+      "name": "Celtics",
+      "city": "Boston",
+      "players": 14,
+      "wins": 42,
+      "losses": 23,
+      "coach": "Joe Mazzulla",
+      "founded": 1946
+    },
+    {
+      "id": 5,
+      "name": "Heat",
+      "city": "Miami",
+      "players": 13,
+      "wins": 38,
+      "losses": 27,
+      "coach": "Erik Spoelstra",
+      "founded": 1988
+    }
+  ],
+  "players": [
+    {
+      "id": 1,
+      "name": "LeBron James",
+      "team": "Lakers",
+      "position": "Forward",
+      "points": 25.3,
+      "assists": 7.2,
+      "rebounds": 7.8,
+      "age": 39
+    },
+    {
+      "id": 2,
+      "name": "Stephen Curry",
+      "team": "Warriors",
+      "position": "Guard",
+      "points": 29.5,
+      "assists": 6.1,
+      "rebounds": 4.2,
+      "age": 35
+    },
+    {
+      "id": 3,
+      "name": "DeMar DeRozan",
+      "team": "Bulls",
+      "position": "Guard",
+      "points": 22.1,
+      "assists": 4.8,
+      "rebounds": 5.1,
+      "age": 34
+    },
+    {
+      "id": 4,
+      "name": "Jayson Tatum",
+      "team": "Celtics",
+      "position": "Forward",
+      "points": 27,
+      "assists": 4.9,
+      "rebounds": 8.1,
+      "age": 25
+    },
+    {
+      "id": 5,
+      "name": "Jimmy Butler",
+      "team": "Heat",
+      "position": "Forward",
+      "points": 20.8,
+      "assists": 5.3,
+      "rebounds": 5.9,
+      "age": 34
+    },
+    {
+      "id": 6,
+      "name": "Anthony Davis",
+      "team": "Lakers",
+      "position": "Center",
+      "points": 24.7,
+      "assists": 3.5,
+      "rebounds": 12.6,
+      "age": 30
+    }
+  ],
+  "games": [
+    {
+      "id": 1,
+      "homeTeam": "Lakers",
+      "awayTeam": "Warriors",
+      "homeScore": 108,
+      "awayScore": 112,
+      "date": "2024-11-01",
+      "status": "Completed"
+    },
+    {
+      "id": 2,
+      "homeTeam": "Bulls",
+      "awayTeam": "Lakers",
+      "homeScore": 95,
+      "awayScore": 103,
+      "date": "2024-11-03",
+      "status": "Completed"
+    },
+    {
+      "id": 3,
+      "homeTeam": "Celtics",
+      "awayTeam": "Heat",
+      "homeScore": 118,
+      "awayScore": 102,
+      "date": "2024-11-05",
+      "status": "Completed"
+    },
+    {
+      "id": 4,
+      "homeTeam": "Warriors",
+      "awayTeam": "Bulls",
+      "homeScore": 0,
+      "awayScore": 0,
+      "date": "2024-11-08",
+      "status": "Scheduled"
+    },
+    {
+      "id": 5,
+      "homeTeam": "Heat",
+      "awayTeam": "Lakers",
+      "homeScore": 0,
+      "awayScore": 0,
+      "date": "2024-11-10",
+      "status": "Scheduled"
+    }
+  ]
+}

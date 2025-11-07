@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏀 Basketball Scoreboard - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .login-section, .dashboard {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .form-group {
+            margin: 20px 0;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #ff6b6b, #ff5252);
+            color: white;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .card h3 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .admin-section {
+            border-left: 4px solid #ffd700;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .data-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #ffd700;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        
+        .alert-success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+            color: #4CAF50;
+        }
+        
+        .alert-error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+        }
+        
+        .credentials-info {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏀 Basketball Scoreboard</h1>
+            <p>Sistema de Gestión Completo con Autenticación JWT</p>
+            <p><strong>Versión 2.0</strong> - Panel de Administración</p>
+        </div>
+        
+        <!-- Login Section -->
+        <div id="loginSection" class="login-section">
+            <h2>🔐 Iniciar Sesión</h2>
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" placeholder="Ingresa tu usuario" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" placeholder="Ingresa tu contraseña" autocomplete="current-password">
+            </div>
+            <button class="btn" onclick="login()">Iniciar Sesión</button>
+            
+            <div class="credentials-info" id="credentialsInfo">
+                <h4>🔑 Credenciales Actuales:</h4>
+                <div id="credentialsList">
+                    <p>Cargando credenciales...</p>
+                </div>
+                <button class="btn" onclick="loadCredentials()">🔄 Actualizar Credenciales</button>
+            </div>
+            
+            <div id="loginAlert"></div>
+        </div>
+        
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" class="dashboard hidden">
+            <div class="user-info">
+                <div>
+                    <h2>📊 Panel de Control</h2>
+                    <span id="userInfo"></span>
+                </div>
+                <div>
+                    <button class="btn" onclick="loadAllData()">🔄 Actualizar Todo</button>
+                    <button class="btn btn-danger" onclick="logout()">🚪 Cerrar Sesión</button>
+                </div>
+            </div>
+            
+            <!-- Statistics -->
+            <div class="card">
+                <h3>📈 Estadísticas Generales</h3>
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Stats will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- Admin Section -->
+                <div id="adminSection" class="card admin-section hidden">
+                    <h3>👑 Panel de Administrador</h3>
+                    <div class="form-group">
+                        <label for="newUsername">Nuevo Usuario:</label>
+                        <input type="text" id="newUsername" placeholder="Nombre de usuario">
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmail">Email:</label>
+                        <input type="email" id="newEmail" placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserPassword">Contraseña:</label>
+                        <input type="password" id="newUserPassword" placeholder="Contraseña segura">
+                    </div>
+                    <div class="form-group">
+                        <label for="newRole">Rol:</label>
+                        <select id="newRole">
+                            <option value="user">Usuario</option>
+                            <option value="coach">Entrenador</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="createUser()">➕ Crear Usuario</button>
+                    <button class="btn" onclick="loadUsers()">👥 Ver Usuarios</button>
+                    
+                    <div id="usersData"></div>
+                    <div id="adminAlert"></div>
+                </div>
+                
+                <!-- Teams Management -->
+                <div class="card">
+                    <h3>🏆 Gestión de Equipos</h3>
+                    <div id="coachSection" class="hidden">
+                        <div class="form-group">
+                            <label for="teamName">Nombre del Equipo:</label>
+                            <input type="text" id="teamName" placeholder="Nombre del equipo">
+                        </div>
+                        <div class="form-group">
+                            <label for="teamCity">Ciudad:</label>
+                            <input type="text" id="teamCity" placeholder="Ciudad del equipo">
+                        </div>
+                        <div class="form-group">
+                            <label for="teamCoach">Entrenador:</label>
+                            <input type="text" id="teamCoach" placeholder="Nombre del entrenador">
+                        </div>
+                        <button class="btn" onclick="createTeam()">➕ Crear Equipo</button>
+                    </div>
+                    <button class="btn" onclick="loadTeams()">🔄 Actualizar Equipos</button>
+                    <div id="teamsData"></div>
+                </div>
+                
+                <!-- Players Management -->
+                <div class="card">
+                    <h3>👤 Gestión de Jugadores</h3>
+                    <div id="playerSection" class="hidden">
+                        <div class="form-group">
+                            <label for="playerName">Nombre del Jugador:</label>
+                            <input type="text" id="playerName" placeholder="Nombre completo">
+                        </div>
+                        <div class="form-group">
+                            <label for="playerTeam">Equipo:</label>
+                            <select id="playerTeam">
+                                <option value="">Seleccionar equipo...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="playerPosition">Posición:</label>
+                            <select id="playerPosition">
+                                <option value="Guard">Guard</option>
+                                <option value="Forward">Forward</option>
+                                <option value="Center">Center</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="playerAge">Edad:</label>
+                            <input type="number" id="playerAge" placeholder="Edad" min="18" max="50">
+                        </div>
+                        <button class="btn" onclick="createPlayer()">➕ Crear Jugador</button>
+                    </div>
+                    <button class="btn" onclick="loadPlayers()">🔄 Actualizar Jugadores</button>
+                    <div id="playersData"></div>
+                </div>
+                
+                <!-- Change Password Section -->
+                <div class="card">
+                    <h3>🔐 Cambiar Contraseña</h3>
+                    <div class="form-group">
+                        <label for="currentPassword">Contraseña Actual:</label>
+                        <input type="password" id="currentPassword" placeholder="Contraseña actual">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">Nueva Contraseña:</label>
+                        <input type="password" id="newPassword" placeholder="Nueva contraseña">
+                    </div>
+                    <button class="btn" onclick="changePassword()">🔄 Cambiar Contraseña</button>
+                    <div id="passwordAlert"></div>
+                </div>
+
+                <!-- Games Section -->
+                <div class="card">
+                    <h3>🎯 Gestión de Partidos</h3>
+                    <div id="gameSection" class="hidden">
+                        <div class="form-group">
+                            <label for="gameHomeTeam">Equipo Local:</label>
+                            <select id="gameHomeTeam">
+                                <option value="">Seleccionar equipo local...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gameAwayTeam">Equipo Visitante:</label>
+                            <select id="gameAwayTeam">
+                                <option value="">Seleccionar equipo visitante...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gameDate">Fecha:</label>
+                            <input type="date" id="gameDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="gameHomeScore">Puntos Local (opcional):</label>
+                            <input type="number" id="gameHomeScore" placeholder="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="gameAwayScore">Puntos Visitante (opcional):</label>
+                            <input type="number" id="gameAwayScore" placeholder="0" min="0">
+                        </div>
+                        <button class="btn" onclick="createGame()">➕ Crear Partido</button>
+                    </div>
+                    <button class="btn" onclick="loadGames()">🔄 Actualizar Partidos</button>
+                    <div id="gamesData"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentToken = null;
+        let currentUser = null;
+        const API_BASE = '/api';
+        
+        // Authentication functions
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showAlert('loginAlert', 'Por favor ingresa usuario y contraseña', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentToken = data.token;
+                    currentUser = data.user;
+                    
+                    document.getElementById('loginSection').classList.add('hidden');
+                    document.getElementById('dashboardSection').classList.remove('hidden');
+                    document.getElementById('userInfo').innerHTML = `
+                        <strong>${data.user.username}</strong> (${data.user.role})<br>
+                        <small>${data.user.email}</small>
+                    `;
+                    
+                    // Show sections based on role
+                    if (data.user.role === 'admin') {
+                        document.getElementById('adminSection').classList.remove('hidden');
+                        document.getElementById('coachSection').classList.remove('hidden');
+                        document.getElementById('playerSection').classList.remove('hidden');
+                        document.getElementById('gameSection').classList.remove('hidden');
+                    } else if (data.user.role === 'coach') {
+                        document.getElementById('coachSection').classList.remove('hidden');
+                        document.getElementById('playerSection').classList.remove('hidden');
+                        document.getElementById('gameSection').classList.remove('hidden');
+                    }
+                    
+                    loadAllData();
+                    showAlert('loginAlert', data.message, 'success');
+                } else {
+                    showAlert('loginAlert', data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('loginAlert', 'Error de conexión', 'error');
+            }
+        }
+        
+        function logout() {
+            currentToken = null;
+            currentUser = null;
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('adminSection').classList.add('hidden');
+            document.getElementById('coachSection').classList.add('hidden');
+            document.getElementById('playerSection').classList.add('hidden');
+            
+            // Clear form fields
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            clearAlert('loginAlert');
+        }
+        
+        // Admin functions
+        async function createUser() {
+            const username = document.getElementById('newUsername').value;
+            const email = document.getElementById('newEmail').value;
+            const password = document.getElementById('newUserPassword').value;
+            const role = document.getElementById('newRole').value;
+            
+            if (!username || !email || !password) {
+                showAlert('adminAlert', 'Todos los campos son requeridos', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({ username, email, password, role })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert('adminAlert', data.message, 'success');
+                    document.getElementById('newUsername').value = '';
+                    document.getElementById('newEmail').value = '';
+                    document.getElementById('newUserPassword').value = '';
+                    loadUsers();
+                } else {
+                    showAlert('adminAlert', data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('adminAlert', 'Error de conexión', 'error');
+            }
+        }
+        
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/users`, {
+                    headers: { 'Authorization': `Bearer ${currentToken}` }
+                });
+                
+                if (response.ok) {
+                    const users = await response.json();
+                    document.getElementById('usersData').innerHTML = `
+                        <h4>👥 Usuarios Registrados:</h4>
+                        ${users.map(user => `
+                            <div class="data-item">
+                                <strong>${user.username}</strong> (${user.role})<br>
+                                <small>${user.email}</small>
+                            </div>
+                        `).join('')}
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+        
+        // Team functions
+        async function createTeam() {
+            const name = document.getElementById('teamName').value;
+            const city = document.getElementById('teamCity').value;
+            const coach = document.getElementById('teamCoach').value;
+            
+            if (!name || !city) {
+                alert('Nombre y ciudad son requeridos');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/teams`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({ name, city, coach })
+                });
+                
+                if (response.ok) {
+                    alert('Equipo creado exitosamente');
+                    document.getElementById('teamName').value = '';
+                    document.getElementById('teamCity').value = '';
+                    document.getElementById('teamCoach').value = '';
+                    loadTeams();
+                    loadTeamOptions();
+                    loadGameTeamOptions(); // También actualizar los selectores de partidos
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error de conexión');
+            }
+        }
+        
+        async function loadTeams() {
+            try {
+                const response = await fetch(`${API_BASE}/teams`);
+                const teams = await response.json();
+                
+                document.getElementById('teamsData').innerHTML = teams.map(team => `
+                    <div class="data-item">
+                        <strong>${team.name}</strong> - ${team.city}<br>
+                        👥 ${team.players} jugadores | 🏆 ${team.wins}W - ${team.losses}L<br>
+                        🏃‍♂️ Entrenador: ${team.coach} | 📅 Fundado: ${team.founded}
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('teamsData').innerHTML = 'Error al cargar equipos';
+            }
+        }
+        
+        async function loadTeamOptions() {
+            try {
+                const response = await fetch(`${API_BASE}/teams`);
+                const teams = await response.json();
+                
+                const select = document.getElementById('playerTeam');
+                select.innerHTML = '<option value="">Seleccionar equipo...</option>';
+                teams.forEach(team => {
+                    select.innerHTML += `<option value="${team.name}">${team.name}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading team options:', error);
+            }
+        }
+        
+        // Player functions
+        async function createPlayer() {
+            const name = document.getElementById('playerName').value;
+            const team = document.getElementById('playerTeam').value;
+            const position = document.getElementById('playerPosition').value;
+            const age = document.getElementById('playerAge').value;
+            
+            if (!name || !team || !position) {
+                alert('Nombre, equipo y posición son requeridos');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/players`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({ name, team, position, age: parseInt(age) })
+                });
+                
+                if (response.ok) {
+                    alert('Jugador creado exitosamente');
+                    document.getElementById('playerName').value = '';
+                    document.getElementById('playerTeam').value = '';
+                    document.getElementById('playerAge').value = '';
+                    loadPlayers();
+                    loadTeams(); // Refresh teams to update player count
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error de conexión');
+            }
+        }
+        
+        async function loadPlayers() {
+            try {
+                const response = await fetch(`${API_BASE}/players`);
+                const players = await response.json();
+                
+                document.getElementById('playersData').innerHTML = players.map(player => `
+                    <div class="data-item">
+                        <strong>${player.name}</strong> (${player.age} años)<br>
+                        🏀 ${player.team} - ${player.position}<br>
+                        📊 ${player.points} pts | 🎯 ${player.assists} ast | 🏀 ${player.rebounds} reb
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('playersData').innerHTML = 'Error al cargar jugadores';
+            }
+        }
+        
+        async function loadGames() {
+            try {
+                const response = await fetch(`${API_BASE}/games`);
+                const games = await response.json();
+                
+                document.getElementById('gamesData').innerHTML = games.map(game => `
+                    <div class="data-item">
+                        <strong>${game.homeTeam} vs ${game.awayTeam}</strong><br>
+                        ${game.status === 'Completed' ? 
+                            `🏆 ${game.homeScore} - ${game.awayScore}` : 
+                            '⏰ Por jugar'
+                        }<br>
+                        📅 ${game.date} | 📊 ${game.status}
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('gamesData').innerHTML = 'Error al cargar partidos';
+            }
+        }
+        
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                const stats = await response.json();
+                
+                document.getElementById('statsGrid').innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.totalTeams}</div>
+                        <div class="stat-label">Equipos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.totalPlayers}</div>
+                        <div class="stat-label">Jugadores</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.totalGames}</div>
+                        <div class="stat-label">Partidos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.completedGames}</div>
+                        <div class="stat-label">Completados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.scheduledGames}</div>
+                        <div class="stat-label">Programados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${stats.averageScore.toFixed(1)}</div>
+                        <div class="stat-label">Promedio Pts</div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        function loadAllData() {
+            loadStats();
+            loadTeams();
+            loadPlayers();
+            loadGames();
+            loadTeamOptions();
+            loadGameTeamOptions();
+        }
+
+        // Cargar credenciales dinámicamente
+        async function loadCredentials() {
+            try {
+                const response = await fetch(`${API_BASE}/credentials`);
+                const credentials = await response.json();
+                
+                document.getElementById('credentialsList').innerHTML = credentials.map(cred => `
+                    <p><strong>${cred.role.charAt(0).toUpperCase() + cred.role.slice(1)}:</strong> ${cred.username} / ${cred.password}</p>
+                `).join('');
+            } catch (error) {
+                document.getElementById('credentialsList').innerHTML = '<p>Error al cargar credenciales</p>';
+            }
+        }
+
+        // Cambiar contraseña
+        async function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            
+            if (!currentPassword || !newPassword) {
+                showAlert('passwordAlert', 'Ambas contraseñas son requeridas', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/change-password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showAlert('passwordAlert', data.message, 'success');
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    loadCredentials(); // Actualizar credenciales mostradas
+                } else {
+                    showAlert('passwordAlert', data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('passwordAlert', 'Error de conexión', 'error');
+            }
+        }
+
+        // Crear partido
+        async function createGame() {
+            const homeTeam = document.getElementById('gameHomeTeam').value;
+            const awayTeam = document.getElementById('gameAwayTeam').value;
+            const date = document.getElementById('gameDate').value;
+            const homeScore = document.getElementById('gameHomeScore').value;
+            const awayScore = document.getElementById('gameAwayScore').value;
+            
+            if (!homeTeam || !awayTeam || !date) {
+                alert('Equipo local, visitante y fecha son requeridos');
+                return;
+            }
+            
+            if (homeTeam === awayTeam) {
+                alert('Un equipo no puede jugar contra sí mismo');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/games`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify({ 
+                        homeTeam, 
+                        awayTeam, 
+                        date, 
+                        homeScore: parseInt(homeScore) || 0,
+                        awayScore: parseInt(awayScore) || 0
+                    })
+                });
+                
+                if (response.ok) {
+                    alert('Partido creado exitosamente');
+                    document.getElementById('gameHomeTeam').value = '';
+                    document.getElementById('gameAwayTeam').value = '';
+                    document.getElementById('gameDate').value = '';
+                    document.getElementById('gameHomeScore').value = '';
+                    document.getElementById('gameAwayScore').value = '';
+                    loadGames();
+                    loadStats(); // Actualizar estadísticas
+                } else {
+                    const data = await response.json();
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error de conexión');
+            }
+        }
+
+        async function loadGameTeamOptions() {
+            try {
+                const response = await fetch(`${API_BASE}/teams`);
+                const teams = await response.json();
+                
+                const homeSelect = document.getElementById('gameHomeTeam');
+                const awaySelect = document.getElementById('gameAwayTeam');
+                
+                homeSelect.innerHTML = '<option value="">Seleccionar equipo local...</option>';
+                awaySelect.innerHTML = '<option value="">Seleccionar equipo visitante...</option>';
+                
+                teams.forEach(team => {
+                    homeSelect.innerHTML += `<option value="${team.name}">${team.name}</option>`;
+                    awaySelect.innerHTML += `<option value="${team.name}">${team.name}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading game team options:', error);
+            }
+        }
+        
+        function showAlert(elementId, message, type) {
+            const alertElement = document.getElementById(elementId);
+            alertElement.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            
+            setTimeout(() => {
+                clearAlert(elementId);
+            }, 5000);
+        }
+        
+        function clearAlert(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add enter key support for login
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+            
+            // Load credentials on page load
+            loadCredentials();
+        });
+    </script>
+</body>
+</html>
