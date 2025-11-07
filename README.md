@@ -439,10 +439,10 @@ Este proyecto está bajo la **Licencia MIT**. Ver archivo `LICENSE` para más de
 ### ✅ **URL de la Aplicación en OpenShift:**
 ```
 🏀 Página Principal: 
-http://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.com
+https://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.com
 
 👑 Panel de Administración:
-http://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.com/admin.html
+https://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.com/admin.html
 ```
 
 ### 🔑 **Credenciales de Acceso:**
@@ -496,8 +496,8 @@ Internet → OpenShift Route → Service → Pod → Node.js App
 
 - **Estudiante**: Manuel Alejandro Sazo Linares (7690-20-13585)
 - **Repositorio**: https://github.com/AlejandroSazo00/Laboratorio3-Seminario
-- **Aplicación en OpenShift**: http://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.com
-- **Panel Admin**: http://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.com/admin.html
+- **Aplicación en OpenShift**: https://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.com
+- **Panel Admin**: https://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.com/admin.html
 
 ---
 
