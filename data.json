@@ -3,9 +3,10 @@
     {
       "id": 1,
       "username": "admin",
-      "password": "Prueba12345",
+      "password": "Melgust",
       "role": "admin",
-      "email": "admin@basketball.com"
+      "email": "admin@basketball.com",
+      "originalPassword": "Melgust"
     },
     {
       "id": 2,
@@ -20,6 +21,14 @@
       "password": "hello",
       "role": "user",
       "email": "user@basketball.com"
+    },
+    {
+      "id": 4,
+      "username": "Alendro",
+      "password": "$2a$10$LnXOejVedTFJ5j9waB4jYOhIrzSIlUXkb3E112FBlOm5zJl5cKluO",
+      "originalPassword": "Umg123456",
+      "role": "user",
+      "email": "prueba154@gmail.com"
     }
   ],
   "teams": [
@@ -57,7 +66,7 @@
       "id": 4,
       "name": "Celtics",
       "city": "Boston",
-      "players": 14,
+      "players": 15,
       "wins": 42,
       "losses": 23,
       "coach": "Joe Mazzulla",
@@ -72,6 +81,16 @@
       "losses": 27,
       "coach": "Erik Spoelstra",
       "founded": 1988
+    },
+    {
+      "id": 6,
+      "name": "GuatemalaEX",
+      "city": "Guatemala",
+      "players": 1,
+      "wins": 0,
+      "losses": 0,
+      "coach": "Escarlata",
+      "founded": 2025
     }
   ],
   "players": [
@@ -134,6 +153,26 @@
       "assists": 3.5,
       "rebounds": 12.6,
       "age": 30
+    },
+    {
+      "id": 7,
+      "name": "Carlos",
+      "team": "Celtics",
+      "position": "Forward",
+      "points": 0,
+      "assists": 0,
+      "rebounds": 0,
+      "age": 35
+    },
+    {
+      "id": 8,
+      "name": "Maria",
+      "team": "GuatemalaEX",
+      "position": "Guard",
+      "points": 0,
+      "assists": 0,
+      "rebounds": 0,
+      "age": 25
     }
   ],
   "games": [
@@ -181,6 +220,16 @@
       "awayScore": 0,
       "date": "2024-11-10",
       "status": "Scheduled"
+    },
+    {
+      "id": 6,
+      "homeTeam": "GuatemalaEX",
+      "awayTeam": "Heat",
+      "homeScore": 90,
+      "awayScore": 30,
+      "date": "2025-11-06",
+      "status": "Completed",
+      "createdBy": "admin"
     }
   ]
 }

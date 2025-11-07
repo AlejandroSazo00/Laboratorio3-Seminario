@@ -148,7 +148,21 @@ app.post('/api/auth/login', async (req, res) => {
     
     const user = users.find(u => u.username === username);
     
-    if (!user || user.password !== password) {
+    if (!user) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
+    
+    // Verificar contraseña - usar bcrypt para usuarios nuevos, comparación directa para usuarios por defecto
+    let passwordValid = false;
+    if (user.password.startsWith('$2a$') || user.password.startsWith('$2b$')) {
+      // Usuario con contraseña hasheada (creado con bcrypt)
+      passwordValid = await bcrypt.compare(password, user.password);
+    } else {
+      // Usuario por defecto con contraseña simple
+      passwordValid = user.password === password;
+    }
+    
+    if (!passwordValid) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
     
@@ -340,10 +354,25 @@ app.put('/api/auth/change-password', authenticateToken, async (req, res) => {
     
     const user = users.find(u => u.id === req.user.id);
     
-    if (!user || user.password !== currentPassword) {
+    if (!user) {
+      return res.status(401).json({ error: 'Usuario no encontrado' });
+    }
+    
+    // Verificar contraseña actual
+    let currentPasswordValid = false;
+    if (user.password.startsWith('$2a$') || user.password.startsWith('$2b$')) {
+      // Contraseña hasheada
+      currentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    } else {
+      // Contraseña simple
+      currentPasswordValid = user.password === currentPassword;
+    }
+    
+    if (!currentPasswordValid) {
       return res.status(401).json({ error: 'Contraseña actual incorrecta' });
     }
     
+    // Actualizar con nueva contraseña (sin hash para simplicidad)
     user.password = newPassword;
     user.originalPassword = newPassword; // Actualizar contraseña original para credenciales
     saveAllData(); // Guardar cambios

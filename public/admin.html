@@ -239,10 +239,6 @@
                 <div id="credentialsList">
                     <p>Cargando credenciales...</p>
                 </div>
-                <div id="usersData">
-                    <p>Cargando usuarios...</p>
-                </div>
-                <div id="usersList" style="margin-top: 20px;"></div>
                 <button class="btn" onclick="loadCredentials()">🔄 Actualizar Credenciales</button>
             </div>
             
@@ -515,8 +511,7 @@
                     document.getElementById('newUsername').value = '';
                     document.getElementById('newEmail').value = '';
                     document.getElementById('newUserPassword').value = '';
-                    loadUsers();
-                    loadUsersWithDelete(); // Actualizar lista con botones de eliminar
+                    loadUsers(); // Actualizar lista de usuarios
                     loadCredentials(); // Actualizar credenciales
                 } else {
                     showAlert('adminAlert', data.error, 'error');
@@ -534,14 +529,22 @@
                 
                 if (response.ok) {
                     const users = await response.json();
+                    const isAdmin = currentUser && currentUser.role === 'admin';
+                    
                     document.getElementById('usersData').innerHTML = `
                         <h4>👥 Usuarios Registrados:</h4>
-                        ${users.map(user => `
-                            <div class="data-item">
-                                <strong>${user.username}</strong> (${user.role})<br>
-                                <small>${user.email}</small>
-                            </div>
-                        `).join('')}
+                        ${users.map(user => {
+                            const canDelete = isAdmin && user.id !== currentUser.id;
+                            return `
+                                <div class="data-item" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <strong>${user.username}</strong> (${user.role})<br>
+                                        <small>${user.email}</small>
+                                    </div>
+                                    ${canDelete ? `<button class="btn" style="background: #dc3545; padding: 5px 10px; font-size: 12px; margin-left: 10px;" onclick="deleteUser(${user.id}, '${user.username}')">🗑️ Eliminar</button>` : ''}
+                                </div>
+                            `;
+                        }).join('')}
                     `;
                 }
             } catch (error) {
@@ -737,7 +740,6 @@
             loadGames();
             loadTeamOptions();
             loadGameTeamOptions();
-            loadUsersWithDelete(); // Cargar usuarios con botones de eliminar
         }
 
         // Cargar credenciales dinámicamente
@@ -808,7 +810,7 @@
                 
                 if (response.ok) {
                     showAlert('loginAlert', data.message, 'success');
-                    loadUsersWithDelete(); // Recargar lista
+                    loadUsers(); // Recargar lista de usuarios
                     loadCredentials(); // Actualizar credenciales
                 } else {
                     showAlert('loginAlert', data.error, 'error');
