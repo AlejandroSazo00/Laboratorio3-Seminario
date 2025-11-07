@@ -427,12 +427,77 @@ oc get events --sort-by=.metadata.creationTimestamp
 
 Este proyecto está bajo la **Licencia MIT**. Ver archivo `LICENSE` para más detalles.
 
+## 👨‍💻 **Información del Estudiante**
+
+- **Nombre:** Manuel Alejandro Sazo Linares
+- **Carnet:** 7690-20-13585
+- **Curso:** Seminario
+- **Proyecto:** Basketball Scoreboard - Sistema de Gestión Completo
+
+## 🌐 **APLICACIÓN DESPLEGADA Y FUNCIONANDO**
+
+### ✅ **URL de la Aplicación en OpenShift:**
+```
+🏀 Página Principal: 
+http://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.com
+
+👑 Panel de Administración:
+http://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.com/admin.html
+```
+
+### 🔑 **Credenciales de Acceso:**
+```
+🔐 Administrador: admin / hello
+🏃 Entrenador:    coach / hello  
+👤 Usuario:       user / hello
+```
+
+### 🧪 **Pruebas para Demostrar Funcionalidad Dinámica:**
+
+#### **Prueba 1: Persistencia de Sesión**
+1. Login con `admin` / `hello`
+2. Presionar **Ctrl+R** (refrescar página)
+3. ✅ **Resultado:** Mantiene la sesión activa
+
+#### **Prueba 2: Cambio de Contraseñas Dinámico**
+1. Ir a "🔐 Cambiar Contraseña"
+2. Cambiar de `hello` a `nueva123`
+3. ✅ **Resultado:** Las credenciales se actualizan automáticamente
+
+#### **Prueba 3: Creación de Datos**
+1. Crear nuevo equipo "Rockets"
+2. Agregar jugador "James Harden" al equipo
+3. Crear partido Lakers vs Rockets
+4. ✅ **Resultado:** Estadísticas se recalculan automáticamente
+
+#### **Prueba 4: Persistencia de Datos**
+1. Crear datos nuevos
+2. Refrescar página múltiples veces
+3. ✅ **Resultado:** Los datos persisten
+
+## 📊 **Estado del Despliegue**
+
+### ✅ **OpenShift Sandbox - FUNCIONANDO**
+- **Namespace:** msazol1-dev
+- **Deployment:** basketball-scoreboard
+- **Service:** basketball-scoreboard-service  
+- **Route:** basketball-scoreboard-route
+- **Pod Status:** Running ✅
+- **Logs:** Servidor iniciado correctamente ✅
+
+### 🏗️ **Arquitectura Desplegada**
+```
+Internet → OpenShift Route → Service → Pod → Node.js App
+                                      ↓
+                                 data.json (persistencia)
+```
+
 ## 📞 Soporte y Contacto
 
-- **Repositorio**: [GitHub Repository]
-- **Issues**: [GitHub Issues]
-- **Documentación**: [Wiki del Proyecto]
-- **Demos**: [URL de Demo en OpenShift]
+- **Estudiante**: Manuel Alejandro Sazo Linares (7690-20-13585)
+- **Repositorio**: https://github.com/AlejandroSazo00/Laboratorio3-Seminario
+- **Aplicación en OpenShift**: http://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.com
+- **Panel Admin**: http://basketball-scoreboard-route-msazol1-dev.apps.rm2.thpm.p1.openshiftapps.com/admin.html
 
 ---
 
